@@ -4,6 +4,15 @@ import { ref } from 'vue'
 const dialogIsVisible = ref(false)
 const animatedBlock = ref(false)
 const parIsVisible = ref(false)
+const usersAreVisible = ref(false)
+
+const showUsers = () => {
+  usersAreVisible.value = true
+}
+
+const hideUsers = () => {
+  usersAreVisible.value = false
+}
 
 const showDialog = () => {
   dialogIsVisible.value = true
@@ -26,6 +35,12 @@ const toggleParagraph = () => (parIsVisible.value = !parIsVisible.value)
       <p v-if="parIsVisible">This is only sometimes visible....</p>
     </transition>
     <button @click="toggleParagraph">Toggle Paragraph</button>
+  </div>
+  <div class="container">
+    <transition name="fade-btn" mode="out-in">
+      <button @click="showUsers" v-if="!usersAreVisible">Show Users</button>
+      <button @click="hideUsers" v-else>Hide Users</button>
+    </transition>
   </div>
   <base-modal @close="hideDialog" :open="dialogIsVisible">
     <p>This is a test dialog!</p>
@@ -107,6 +122,22 @@ button:active {
 .para-leave-to {
   /* opacity: 0;
   transform: translateY(30px); */
+}
+
+.fade-btn-enter-from,
+.fade-btn-leave-to {
+  opacity: 0;
+}
+.fade-btn-enter-active {
+  transition: opacity 0.3s ease-out;
+}
+
+.fade-btn-leave-active {
+  transition: opacity 0.3s ease-in;
+}
+.fade-btn-enter-to,
+.fade-btn-leave-from {
+  opacity: 1;
 }
 
 @keyframes slide-fade {
