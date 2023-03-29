@@ -5,6 +5,8 @@ const dialogIsVisible = ref(false)
 const animatedBlock = ref(false)
 const parIsVisible = ref(false)
 const usersAreVisible = ref(false)
+const enterInterval = ref(null)
+const leaveInterval = ref(null)
 
 const showUsers = () => {
   usersAreVisible.value = true
@@ -23,6 +25,68 @@ const hideDialog = () => {
 
 const animateBlock = () => (animatedBlock.value = !animatedBlock.value)
 const toggleParagraph = () => (parIsVisible.value = !parIsVisible.value)
+
+const beforeEnter = (el) => {
+  console.log('beforeEnter')
+  console.log(el)
+  el.style.opacity = 0
+}
+
+const enter = (el, done) => {
+  console.log('Enter')
+  console.log(el)
+  let round = 1
+  enterInterval.value = setInterval(() => {
+    el.style.opacity = round * 0.01
+    round++
+    if (round > 100) {
+      clearInterval(enterInterval.value)
+      done()
+    }
+  }, 20)
+}
+
+const afterEnter = (el) => {
+  console.log('afterEnter')
+  console.log(el)
+}
+
+const beforeLeave = (el) => {
+  console.log('beforeLeave')
+  console.log(el)
+  el.style.opacity = 1
+}
+
+const leave = (el, done) => {
+  console.log('Leave')
+  console.log(el)
+
+  let round = 1
+  leaveInterval.value = setInterval(() => {
+    el.style.opacity = 1 - round * 0.01
+    round++
+    if (round > 100) {
+      clearInterval(leaveInterval.value)
+      done()
+    }
+  }, 20)
+}
+
+const afterLeave = (el) => {
+  console.log('afterLeaver')
+  console.log(el)
+}
+
+const enterCancelled = (el) => {
+  console.log('enterCancelled')
+  console.log(el)
+  clearInterval(enterInterval.value)
+}
+const leaveCancelled = (el) => {
+  clearInterval(leaveInterval.value)
+  console.log('leaveCancelled')
+  console.log(el)
+}
 </script>
 
 <template>
@@ -31,7 +95,17 @@ const toggleParagraph = () => (parIsVisible.value = !parIsVisible.value)
     <button @click="animateBlock">Animate</button>
   </div>
   <div class="container">
-    <transition name="para">
+    <transition
+      name="para"
+      @before-enter="beforeEnter"
+      @enter="enter"
+      @after-enter="afterEnter"
+      @before-leave="beforeLeave"
+      @leave="leave"
+      @after-leave="afterLeave"
+      @enter-cancelled="enterCancelled"
+      @leave-cancelled="leaveCancelled"
+    >
       <p v-if="parIsVisible">This is only sometimes visible....</p>
     </transition>
     <button @click="toggleParagraph">Toggle Paragraph</button>
@@ -96,32 +170,6 @@ button:active {
 .animate {
   /* transform: translateX(-150px); */
   animation: slide-fade 0.3s ease-out forwards;
-}
-
-.para-enter-from {
-  /* opacity: 0;
-  transform: translateY(-30px); */
-}
-.para-enter-active {
-  /* transition: all 0.3s ease-out; */
-  animation: slide-fade 0.3s ease-out;
-}
-.para-enter-to {
-  /* opacity: 1;
-  transform: translateY(0); */
-}
-
-.para-leave-from {
-  /* opacity: 1;
-  transform: translateY(0); */
-}
-.para-leave-active {
-  /* transition: all 0.3s ease-in; */
-  animation: slide-fade 0.3s ease-out;
-}
-.para-leave-to {
-  /* opacity: 0;
-  transform: translateY(30px); */
 }
 
 .fade-btn-enter-from,
