@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import ListData from './components/ListData.vue'
 
 const dialogIsVisible = ref(false)
 const animatedBlock = ref(false)
@@ -90,6 +91,9 @@ const leaveCancelled = (el) => {
 </script>
 
 <template>
+  <div class="container">
+    <ListData />
+  </div>
   <div class="container">
     <div class="block" :class="{ animate: animatedBlock }"></div>
     <button @click="animateBlock">Animate</button>
