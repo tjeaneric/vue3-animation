@@ -91,42 +91,11 @@ const leaveCancelled = (el) => {
 </script>
 
 <template>
-  <div class="container">
-    <ListData />
-  </div>
-  <div class="container">
-    <div class="block" :class="{ animate: animatedBlock }"></div>
-    <button @click="animateBlock">Animate</button>
-  </div>
-  <div class="container">
-    <transition
-      :css="false"
-      @before-enter="beforeEnter"
-      @enter="enter"
-      @after-enter="afterEnter"
-      @before-leave="beforeLeave"
-      @leave="leave"
-      @after-leave="afterLeave"
-      @enter-cancelled="enterCancelled"
-      @leave-cancelled="leaveCancelled"
-    >
-      <p v-if="parIsVisible">This is only sometimes visible....</p>
-    </transition>
-    <button @click="toggleParagraph">Toggle Paragraph</button>
-  </div>
-  <div class="container">
-    <transition name="fade-btn" mode="out-in">
-      <button @click="showUsers" v-if="!usersAreVisible">Show Users</button>
-      <button @click="hideUsers" v-else>Hide Users</button>
-    </transition>
-  </div>
-  <base-modal @close="hideDialog" :open="dialogIsVisible">
-    <p>This is a test dialog!</p>
-    <button @click="hideDialog">Close it!</button>
-  </base-modal>
-  <div class="container">
-    <button @click="showDialog">Show Dialog</button>
-  </div>
+  <router-view v-slot="slotProps">
+    <transition name="fade-btn" mode="out-in"
+      ><component :is="slotProps.Component"></component
+    ></transition>
+  </router-view>
 </template>
 
 <style>
@@ -190,6 +159,14 @@ button:active {
 .fade-btn-enter-to,
 .fade-btn-leave-from {
   opacity: 1;
+}
+
+.route-enter-active {
+  animation: slide-fade 0.4s ease-out;
+}
+
+.route-leave-active {
+  animation: slide-fade 0.4s ease-in;
 }
 
 @keyframes slide-fade {
